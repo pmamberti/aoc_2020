@@ -3,24 +3,22 @@ import re
 with open("day04_data", "r", newline="\n") as fin:
     all_passports = fin.readlines()
 
-content = []
+ordered_passports = []
 buffer = []
 
 for line in all_passports:
-    if line != "\n":
-        buffer.append(line.strip("\n"))
-        print(type(buffer))
+    splitline = line.split()
+    # print(splitline)
+    if splitline:
+        buffer.extend(splitline)
+        print(buffer)
     else:
-        content += buffer
-        buffer = ""
+        ordered_passports.append(buffer)
+        buffer = []
+        continue
 
-for c in content:
-    c = re.split(":| ", c)
-    c.pop(0)
-    # print(c)
-
-
-required = [
+valid_count = 0
+required_fields = [
     "byr",
     "iyr",
     "eyr",
@@ -30,13 +28,9 @@ required = [
     "pid",
 ]
 
-valid_count = 0
+for passport in ordered_passports:
+    existing_fields = [field.split(":")[0] for field in passport]
+    if all(field in existing_fields for field in required_fields):
+        valid_count += 1
 
-for c in content:
-    # result = all(list(c) for req_field in required)
-    print(list(c))
-    # if result:
-    #     valid_count += 1
-
-print(len(content))
 print(valid_count)
